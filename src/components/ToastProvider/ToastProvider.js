@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export const ToastContext = React.createContext({
   toasts: [],
@@ -21,6 +21,17 @@ function ToastProvider({ children }) {
     const newToasts = toasts.filter((toast) => toast.id !== toastId);
     setToasts(newToasts);
   };
+
+  useEffect(() => {
+    const dimissAllOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setToasts([]);
+      }
+    };
+    window.addEventListener("keydown", dimissAllOnEscape);
+
+    return () => window.removeEventListener("keydown", dimissAllOnEscape);
+  }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, addToast, dismissToast }}>
